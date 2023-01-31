@@ -1,0 +1,15 @@
+geometry_msgs/Point position
+geometry_msgs/Vector3 velocity
+float64 rcs
+uint64 timestamp
+geometry_msgs/Point position_enu
+geometry_msgs/Vector3 velocity_center
+float64 angle
+float64 range
+float64 course
+float64 elevation
+float64 speed
+float64 eta
+float64 threat_val
+uint64 threat_type
+uint64 location_area

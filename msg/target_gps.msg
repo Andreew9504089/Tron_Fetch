@@ -1,0 +1,4 @@
+string track_id
+geometry_msgs/Point position_gps
+geometry_msgs/Point position_enu
+geometry_msgs/Vector3 linear
