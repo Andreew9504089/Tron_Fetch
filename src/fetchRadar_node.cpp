@@ -1,6 +1,8 @@
 #include <iostream>
 #include <map>
 #include <stdlib.h>
+#include <typeinfo>
+#include <string>
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -53,7 +55,7 @@ int main(int argc, char **argv) {
         std::string event_id{};
         std::string track_id{};
         std::vector<float> gps{0, 0, 0};
-        std::vector<float> state{0, 0, 0, 0, 0, 0, 0, 0, 0}; // position, velocity, color
+        std::vector<float> state{0, 0, 0, 0, 0, 0, 0, 0, 0}; // position
 
         //std::cout << "message received:" << s.substr(0, message.bodySize()) << "\n" << std::endl;
         // acknowledge the message
@@ -61,6 +63,8 @@ int main(int argc, char **argv) {
 
         if(ros::ok()){
             std_msgs::String msg;
+            float time;
+            int target_type;
             tron_future::targets_arr detection_arr;
             tron_future::target_gps detection;
             RSJresource radar_raw (s.substr(0, message.bodySize()));
@@ -70,6 +74,7 @@ int main(int argc, char **argv) {
             for (int i = 0; i < radar_raw["data"]["targets_updated"].size(); i++){
 
                 if(radar_raw["data"]["targets_updated"][i]["state_time_pairs"][0].size() > 0){
+
                     gps[0] = std::stof(radar_raw["data"]["targets_updated"][i]
                                             ["state_time_pairs"][0]
                                                 ["position"]["lat"].as<std::string>());
@@ -84,24 +89,31 @@ int main(int argc, char **argv) {
                                                 ["track_id"].as<std::string>();
 
                     state[0] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["position_enu"]["east"].as<std::string>());
+                                                    ["state_time_pairs"][0]
+                                                         ["position_center"]["east"].as<std::string>());
                     state[1] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["position_enu"]["north"].as<std::string>());
+                                                    ["state_time_pairs"][0]
+                                                        ["position_center"]["north"].as<std::string>());
                     state[2] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["position_enu"]["up"].as<std::string>());
-                    state[3] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["velocity"]["east"].as<std::string>());
-                    state[4] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["velocity"]["north"].as<std::string>());
-                    state[5] = std::stof(radar_raw["data"]["targets_updated"][i]
-                                                ["state_time_pairs"][0]
-                                                    ["velocity"]["up"].as<std::string>());
-                    
+                                                    ["state_time_pairs"][0]
+                                                        ["position_center"]["up"].as<std::string>());
+                    state[0] = 0;std::stof(radar_raw["data"]["targets_updated"][i]
+                                                     ["state_time_pairs"][0]
+                                                        ["velocity"]["east"].as<std::string>());
+                    state[1] = std::stof(radar_raw["data"]["targets_updated"][i]
+                                                   ["state_time_pairs"][0]
+                                                        ["velocity"]["north"].as<std::string>());
+                    state[2] = std::stof(radar_raw["data"]["targets_updated"][i]
+                                                    ["state_time_pairs"][0]
+                                                        ["velocity"]["up"].as<std::string>());
+
+                    time = std::stof(radar_raw["data"]["targets_updated"][i]
+                                                    ["state_time_pairs"][0]
+                                                        ["timestamp"].as<std::string>());
+
+                    target_type = std::stof(radar_raw["data"]["targets_updated"][i]
+                                                    ["target_type"].as<std::string>());
+
                     detection.track_id = track_id;
                     detection.position_gps.x = gps[0];
                     detection.position_gps.y = gps[1];
@@ -109,9 +121,12 @@ int main(int argc, char **argv) {
                     detection.position_enu.x = state[0];
                     detection.position_enu.y = state[1];
                     detection.position_enu.z = state[2];
-                    detection.linear.x = state[3];
-                    detection.linear.y = state[4];
-                    detection.linear.z = state[5];
+                    detection.linear.x = state[0];
+                    detection.linear.y = state[1];
+                    detection.linear.z = state[2];
+                    detection.radar_stamp = time;
+                    detection.local_stamp = ros::Time::now();
+                    detection.target_type = target_type;
                     detection_arr.data.push_back(detection);
 
                     std::map<std::string,std::vector<float>>::iterator it = tracklets_enu.find(track_id);

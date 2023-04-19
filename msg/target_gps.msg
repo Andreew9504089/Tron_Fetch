@@ -1,4 +1,7 @@
 string track_id
+float64 radar_stamp
+time local_stamp
+int8 target_type
 geometry_msgs/Point position_gps
 geometry_msgs/Point position_enu
 geometry_msgs/Vector3 linear

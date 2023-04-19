@@ -1,0 +1,3 @@
+<launch>
+    <node name="fetcher" pkg="tron_future" type="fetchRadar_node" output="screen"/>
+</launch>
