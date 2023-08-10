@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "fVotCbCWApJA/W76ONgasdRl8+1xrhlAC/1R4L7kaIbGsh3SoCmx3j19WwCoqw80HWObhY9DPGrcJb95Xgr8dQ==",
+  "success": true,
+  "projectFilePath": "/home/andrew/tron_radar_ws/src/RadarRelay/RadarRelay.csproj",
+  "expectedPackageFiles": [
+    "/home/andrew/.nuget/packages/rabbitmq.client/6.5.0/rabbitmq.client.6.5.0.nupkg.sha512",
+    "/home/andrew/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512",
+    "/home/andrew/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
